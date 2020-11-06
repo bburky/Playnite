@@ -25,6 +25,7 @@ namespace Playnite.Scripting.PowerShell
             Runtime.ImportModule(path);
             SupportedEvents = GetSupportedEvents();
             SupportedMenus = GetSupportedMenus();
+            FunctionExports = new List<ScriptFunctionExport>(Runtime.GetFunctions().Select(kvp => new ScriptFunctionExport(kvp.Key, kvp.Key, this)));
         }
 
         public override void Dispose()

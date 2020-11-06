@@ -318,6 +318,19 @@ namespace Playnite.Plugins
                 {
                     functions.AddRange(desc.Functions.Select(a => new ScriptFunctionExport(a.Description, a.FunctionName, script)));
                 }
+
+                var pluginFunction = script.FunctionExports?.FirstOrDefault(f => f.FunctionName == "GenericPlugin");
+                if (pluginFunction != null)
+                {
+                    Plugin plugin = (Plugin)script.InvokeFunction(pluginFunction.FunctionName, new List<object>() { injectingApi });
+                    var pluginDesc = desc.GetClone();
+                    pluginDesc.Type = ExtensionType.GenericPlugin;
+                    // TODO: Not possible to reload Plugins?
+                    if (!Plugins.ContainsKey(plugin.Id))
+                    {
+                        Plugins.Add(plugin.Id, new LoadedPlugin(plugin, pluginDesc));
+                    }
+                }
             }
 
             ScriptFunctions = functions;

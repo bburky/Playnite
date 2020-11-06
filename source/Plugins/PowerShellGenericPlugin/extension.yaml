@@ -1,0 +1,6 @@
+﻿Id: PowerShellGenericPlugin
+Name: PowerShell GenericPlugin
+Author: Playnite
+Version: 1.0
+Module: plugin.psm1
+Type: Script

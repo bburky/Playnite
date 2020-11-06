@@ -148,6 +148,15 @@ namespace Playnite.Scripting.PowerShell
             return module.ExportedCommands.TryGetValue(name, out command) ? command : null;
         }
 
+        public Dictionary<string, CommandInfo> GetFunctions()
+        {
+            if (module == null)
+            {
+                return null;
+            }
+            return module.ExportedCommands;
+        }
+
         public object InvokeFunction(string name, List<object> arguments)
         {
             var command = GetFunction(name);
