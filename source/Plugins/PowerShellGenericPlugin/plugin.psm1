@@ -1,10 +1,14 @@
-class MySettings : Playnite.SDK.PowerShellSettings {
+using namespace System.Collections.Generic
+using namespace Playnite.SDK
+using namespace Newtonsoft.Json
+
+class MySettings : PowerShellSettings {
     [string] $Option1 = "Default value"
     [bool] $Option2 = $false
 
     # Playnite serializes settings object to a JSON object and saves it as text file.
     # If you want to exclude some property from being saved then use `JsonIgnore` ignore attribute.
-    [Newtonsoft.Json.JsonIgnore()][MyPlugin] $plugin
+    [JsonIgnore()][MyPlugin] $plugin
 
     # Parameterless constructor must exist if you want to use LoadPluginSettings method.
     MySettings() {
@@ -47,15 +51,15 @@ class MySettings : Playnite.SDK.PowerShellSettings {
     }
 
     # Alternate VerifySettings from PowerShellSettings
-    [Collections.Generic.List[string]] VerifySettings(){
+    [List[string]] VerifySettings(){
         # Return a nonempty list to indicate true
         return $null
     }
 }
 
-class MyPlugin : Playnite.SDK.Plugins.Plugin {
-    [Playnite.SDK.ILogger]$logger = [Playnite.SDK.LogManager]::GetLogger("MyPlugin")
-    [Playnite.SDK.IPlayniteAPI]$PlayniteApi
+class MyPlugin : Plugins.Plugin {
+    [ILogger]$logger = [LogManager]::GetLogger("MyPlugin")
+    [IPlayniteAPI]$PlayniteApi
     [MySettings]$settings
 
     # You can't correctly do getters/setters in PowerShell, but you can override get_Id directly
@@ -63,18 +67,18 @@ class MyPlugin : Playnite.SDK.Plugins.Plugin {
        return "00000000-0000-0000-0000-000000000001"
     }
 
-    MyPlugin([Playnite.SDK.IPlayniteAPI]$api) : base($api) {
+    MyPlugin([IPlayniteAPI]$api) : base($api) {
         $this.logger.Info("MyPlugin constructing")
         $this.PlayniteApi = $api
         $this.settings = [MySettings]::new($this)
     }
 
-    [void]OnGameSelected([Playnite.SDK.Events.GameSelectionEventArgs]$gameSelectionEventArgs) {
+    [void]OnGameSelected([Events.GameSelectionEventArgs]$gameSelectionEventArgs) {
         $this.logger.Info("OnGameSelected $($gameSelectionEventArgs.OldValue) -> $($gameSelectionEventArgs.NewValue)")
 
     }
 
-    [Playnite.SDK.ISettings]GetSettings([bool]$firstRunSettings)
+    [ISettings]GetSettings([bool]$firstRunSettings)
     {
         return $this.settings
     }
